@@ -2,17 +2,27 @@
 
 namespace App;
 
-class User 
+use SplObserver;
+use SplSubject;
+
+class User implements SplObserver
 {
-    // Hors exercice mais notable:
-    // Promotion du constructeur: https://www.php.net/manual/fr/language.oop5.decon.php#language.oop5.decon.constructor.promotion
-    public function __construct(
-        private string $name,
-        private bool $notified = false
-    ) {}
+    private $name;
+    private $notified = false;
 
+    public function __construct($name)
+    {
+        $this->name = $name;
+    }
 
-    public function isNotified(): bool
+    //encore des erreurs ici meme si les tests sont passés
+
+    public function update(SplSubject $subject)
+    {
+        $this->notified = true;
+    }
+
+    public function isNotified()
     {
         return $this->notified;
     }

@@ -2,27 +2,45 @@
 
 namespace App;
 
-class MusicBand 
+use SplSubject;
+use SplObserver;
+
+class MusicBand implements SplSubject
 {
-    // Hors exercice mais notable:
-    // Promotion du constructeur: https://www.php.net/manual/fr/language.oop5.decon.php#language.oop5.decon.constructor.promotion
-    public function __construct(
-        private string $name,
-        private array $concerts = []
-    ) {}
+    private $name;
+    private $observers = [];
+    private $concertDate;
 
-
-    public function addNewConcertDate(string $date, string $location):void
+    public function __construct($name)
     {
-        $this->concert = [
-            'date' =>  $date,
-            'location' => $location
-        ];
+        $this->name = $name;
     }
 
-    public function attach(): void 
-    {}
+    //encore des erreurs ici meme si les tests sont passés
 
-    public function detach(): void 
-    {}
+    public function attach(SplObserver $observer)
+    {
+        $this->observers[] = $observer;
+    }
+
+    public function detach(SplObserver $observer)
+    {
+        $key = array_search($observer, $this->observers, true);
+        if ($key !== false) {
+            unset($this->observers[$key]);
+        }
+    }
+
+    public function notify()
+    {
+        foreach ($this->observers as $observer) {
+            $observer->update($this);
+        }
+    }
+
+    public function addNewConcertDate($date, $location)
+    {
+        $this->concertDate = "$date at $location";
+        $this->notify();
+    }
 }
