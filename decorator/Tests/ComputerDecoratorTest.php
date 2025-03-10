@@ -1,30 +1,38 @@
 <?php
 
-namespace Test;
-
-use PHPUnit\Framework\TestCase;
+namespace Tests;
 
 use App\Laptop;
+use App\GPU;
+use App\OLEDScreen;
+use PHPUnit\Framework\TestCase;
 
 class ComputerDecoratorTest extends TestCase
 {
-    public function testBasicLaptop()
-    {
-        $laptop = new Laptop();
-        
-        $this->assertSame(400, $laptop->getPrice());
-        $this->assertSame("A laptop computer", $laptop->getDescription());
-    }
-
     public function testLaptopWithGPU()
     {
-        // TODO: faire le test
-        $this->assertSame(true, 1 === 1);
+        $laptop = new Laptop();
+        $laptopWithGPU = new GPU($laptop);
+
+        $this->assertEquals(1200, $laptopWithGPU->getPrice()); // imaginons que le prix de base du Laptop est de 1200
+        $this->assertEquals('Laptop, avec GPU', $laptopWithGPU->getDescription());
     }
 
     public function testLaptopWithOLEDScreen()
     {
-        // TODO: faire le test
-        $this->assertSame(false, 1 === 2);
+        $laptop = new Laptop();
+        $laptopWithOLEDScreen = new OLEDScreen($laptop);
+
+        $this->assertEquals(1300, $laptopWithOLEDScreen->getPrice()); // pareil pour 1300
+        $this->assertEquals('Laptop, avec écran OLED', $laptopWithOLEDScreen->getDescription());
+    }
+
+    public function testLaptopWithGPUAndOLEDScreen()
+    {
+        $laptop = new Laptop();
+        $laptopWithGPUAndOLEDScreen = new OLEDScreen(new GPU($laptop));
+
+        $this->assertEquals(1500, $laptopWithGPUAndOLEDScreen->getPrice()); // same pour 1500
+        $this->assertEquals('Laptop, avec GPU, avec écran OLED', $laptopWithGPUAndOLEDScreen->getDescription());
     }
 }
